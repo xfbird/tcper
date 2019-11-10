@@ -5,8 +5,9 @@ import (
 	"github.com/xiangrui2019/tcper/utils"
 	"log"
 	"net"
-	"time"
 )
+
+var connectionId uint32
 
 type Server struct {
 }
@@ -47,19 +48,19 @@ func (server *Server) Start() error {
 	log.Println("[Tcper] Server started success.")
 
 	for {
-		conn, err := listenner.Accept()
+		conn, err := listenner.AcceptTCP()
 
 		if err != nil {
 			log.Println(err)
 			continue
 		}
 
-		go func(connection net.Conn) {
-			for {
-				connection.Write([]byte("Ping."))
-				time.Sleep(time.Minute)
-			}
-		}(conn)
+		dealConn := NewConnection(
+			conn, connectionId, nil)
+
+		connectionId++
+
+		dealConn.Start()
 	}
 }
 
