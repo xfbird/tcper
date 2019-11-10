@@ -1,23 +1,24 @@
 package impls
 
 import (
-	"github.com/xiangrui2019/tcper/interfaces"
 	"github.com/xiangrui2019/tcper/utils"
 	"log"
 	"net"
 )
 
+type HandlerFunc func(*Connection, []byte, int) error
+
 type Connection struct {
 	Connection   *net.TCPConn
 	ConnectionId uint32
 	isClosed     bool
-	Handler      interfaces.HandlerFunc
+	Handler      HandlerFunc
 	ExitChan     chan bool
 }
 
 func NewConnection(conn *net.TCPConn,
 	connectionId uint32,
-	handler_func interfaces.HandlerFunc) *Connection {
+	handler_func HandlerFunc) *Connection {
 	return &Connection{
 		Connection:   conn,
 		ConnectionId: connectionId,
@@ -29,7 +30,7 @@ func NewConnection(conn *net.TCPConn,
 
 func (connection *Connection) StartReader() {
 	log.Println("Reader Goroutine is running....")
-	defer log.Printf("ConnectionId = %s RemoteAddr = %s Reader is exit.",
+	defer log.Printf("ConnectionId = %d RemoteAddr = %s Reader is exit.",
 		connection.ConnectionId, connection.GetRemoteAddr())
 	defer connection.Stop()
 

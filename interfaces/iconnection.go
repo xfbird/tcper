@@ -1,7 +1,6 @@
 package interfaces
 
 import (
-	"github.com/xiangrui2019/tcper/impls"
 	"net"
 )
 
@@ -13,5 +12,3 @@ type IConnection interface {
 	GetRemoteAddr() net.Addr
 	Send(data []byte) error
 }
-
-type HandlerFunc func(*impls.Connection, []byte, int) error
